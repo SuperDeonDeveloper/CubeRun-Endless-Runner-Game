@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cube Run Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Press Start 2P', cursive;
+            background: #87CEEB;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            border: 2px solid black;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+            position: absolute;
+            bottom: 0;
+        }
+
+        .cloud {
+            width: 100px;
+            height: 60px;
+            background: white;
+            border-radius: 50px;
+            position: absolute;
+            top: 10%;
+            animation: moveCloud 20s infinite linear;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+
+        .cloud::before {
+            width: 60px;
+            height: 60px;
+            top: -20px;
+            left: 20px;
+        }
+
+        .cloud::after {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 50px;
+        }
+
+        @keyframes moveCloud {
+            from {
+                right: -100px;
+            }
+            to {
+                right: 100vw;
+            }
+        }
+
+        .ground {
+            width: 100%;
+            height: 50px;
+            background: #8B4513;
+            position: absolute;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .grass {
+            width: 100%;
+            height: 10px;
+            background: #228B22;
+            position: absolute;
+            bottom: 50px;
+            z-index: 2;
+        }
+
+        .cube {
+            width: 50px;
+            height: 50px;
+            background-color: #4CAF50;
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .obstacle {
+            width: 30px;
+            height: 50px;
+            background-color: #ff5722;
+            position: absolute;
+            bottom: 50px;
+            right: 240px;
+            animation: moveObstacle 2s infinite linear;
+            z-index: 3;
+        }
+
+        @keyframes moveObstacle {
+            from {
+                right: 240px;
+            }
+            to {
+                right: 100%;
+            }
+        }
+
+        .jump {
+            animation: jump 0.6s ease-out;
+        }
+
+        @keyframes jump {
+            0% { bottom: 50px; }
+            50% { bottom: 200px; }
+            100% { bottom: 50px; }
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            flex-direction: column;
+            display: none;
+            text-align: center;
+            z-index: 4;
+        }
+
+        .game-over button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #ff5722;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .game-over button:hover {
+            background-color: #e64a19;
+        }
+
+        .main-menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            flex-direction: column;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .main-menu button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .main-menu button:hover {
+            background-color: #388E3C;
+        }
+
+        .version {
+            font-size: 12px;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .help-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            flex-direction: column;
+            text-align: center;
+            z-index: 6;
+        }
+
+        .help-panel button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #ff5722;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .help-panel button:hover {
+            background-color: #e64a19;
+        }
+
+        /* Mobile Landscape CSS */
+        @media (orientation: portrait) {
+            body {
+                overflow: hidden;
+            }
+            .game-container {
+                display: none;
+            }
+            .main-menu {
+                display: none;
+            }
+            .game-over {
+                display: none;
+            }
+            .help-panel {
+                display: none;
+            }
+            .rotate-message {
+                display: block;
+                color: white;
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-top: 20%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rotate-message" id="rotateMessage">
+        Please rotate your device to landscape mode.
+    </div>
+
+    <div class="game-container">
+        <div class="cloud" style="top: 20%;"></div>
+        <div class="cloud" style="top: 40%; animation-delay: 5s;"></div>
+        <div class="cloud" style="top: 60%; animation-delay: 10s;"></div>
+
+        <div class="grass"></div>
+        <div class="ground"></div>
+
+        <div class="score">Score: <span id="scoreValue">0</span></div>
+        <div class="cube" id="cube"></div>
+        <div class="obstacle" id="obstacle"></div>
+        
+        <div class="game-over" id="gameOver">
+            GAME OVER! <br>
+            <span id="finalScore"></span>
+            <button onclick="restartGame()">Restart</button>
+        </div>
+
+        <div class="main-menu" id="mainMenu">
+            CUBE RUN GAME<br>
+            <button onclick="startGame()">Start Game</button>
+            <button onclick="showHelp()">Help</button>
+            <div class="version">version 1.0</div>
+        </div>
+
+        <div class="help-panel" id="helpPanel">
+            <h2>How to Play:</h2>
+            <p>Click on the Cube to make it jump. Avoid the obstacles coming your way!</p>
+            <button onclick="closeHelp()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const cube = document.getElementById('cube');
+        const obstacle = document.getElementById('obstacle');
+        const gameOverScreen = document.getElementById('gameOver');
+        const mainMenu = document.getElementById('mainMenu');
+        const scoreElement = document.getElementById('scoreValue');
+        const helpPanel = document.getElementById('helpPanel');
+        const rotateMessage = document.getElementById('rotateMessage');
+        let gameActive = false;
+        let score = 0;
+        let obstacleSpeed = 2;
+        let gameInterval;
+        let scoreInterval;
+
+        // Start the game
+        function startGame() {
+            score = 0;
+            gameActive = true;
+            mainMenu.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            obstacle.style.animation = `moveObstacle ${obstacleSpeed}s infinite linear`;
+            gameInterval = setInterval(updateGame, 1000 / 60);
+            scoreInterval = setInterval(updateScore, 1000);
+            rotateMessage.style.display = 'none';
+        }
+
+        // Stop the game
+        function stopGame() {
+            clearInterval(gameInterval);
+            clearInterval(scoreInterval);
+            gameActive = false;
+        }
+
+        // Update the game
+        function updateGame() {
+            if (!gameActive) return;
+
+            let cubeRect = cube.getBoundingClientRect();
+            let obstacleRect = obstacle.getBoundingClientRect();
+
+            // Check for collision
+            if (cubeRect.top < obstacleRect.bottom &&
+                cubeRect.bottom > obstacleRect.top &&
+                cubeRect.left < obstacleRect.right &&
+                cubeRect.right > obstacleRect.left) {
+                stopGame();
+                gameOverScreen.style.display = 'flex';
+                document.getElementById('finalScore').textContent = 'Score: ' + score;
+            }
+        }
+
+        // Jump function
+        cube.onclick = function() {
+            if (!gameActive) return;
+            cube.classList.add('jump');
+            setTimeout(() => {
+                cube.classList.remove('jump');
+            }, 600);
+        };
+
+        // Update score
+        function updateScore() {
+            if (gameActive) {
+                score++;
+                scoreElement.textContent = score;
+            }
+        }
+
+        // Restart the game
+        function restartGame() {
+            gameOverScreen.style.display = 'none';
+            startGame();
+        }
+
+        // Show help panel
+        function showHelp() {
+            mainMenu.style.display = 'none';
+            helpPanel.style.display = 'flex';
+        }
+
+        // Close help panel
+        function closeHelp() {
+            helpPanel.style.display = 'none';
+            mainMenu.style.display = 'flex';
+        }
+
+        // Listen for orientation change
+        window.addEventListener('orientationchange', function() {
+            if (window.orientation === 0 || window.orientation === 180) {
+                rotateMessage.style.display = 'block';
+                gameContainer.style.display = 'none';
+            } else {
+                rotateMessage.style.display = 'none';
+                gameContainer.style.display = 'block';
+            }
+        });
+
+        // Initialize game state on load
+        if (window.orientation === 0 || window.orientation === 180) {
+            rotateMessage.style.display = 'block';
+            gameContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
